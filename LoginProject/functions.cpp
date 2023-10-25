@@ -99,4 +99,15 @@ void delete_user(string name){
     cout << "User deleted." << endl;
 }
 
+bool login(string name, string password){
+    vector<UserInfo> users = get_infos(FILE_NAME);
+    for (UserInfo user : users){
+        if (user.name == name && user.password == password){
+            return true;
+        }
+    }
+    return false;
+}
+
+
 

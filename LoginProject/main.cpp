@@ -9,36 +9,30 @@ int main()
         string pw;
         std::cout << "Enter your password: ";
         std::cin >> pw;
-
-        vector<UserInfo> users = get_infos(FILE_NAME);
-        for (UserInfo user : users){
-            if (user.name == name && user.password == pw){
-                std::cout << "Login successful." << std::endl;
-                std::cout << "Welcome " << name << std::endl;
-                std::cout << "What service you want, " << name << " ?" << std::endl;
-                std::cout << "1. Change password" << std::endl;
-                std::cout << "2. Delete account" << std::endl;
-                std::cout << "3. Exit" << std::endl;
-                int choice;
-                std::cout << "Enter your choice: ";
-                std::cin >> choice;
-                if (choice == 1){
-                    std::string password;
-                    std::cout << "Enter your new password: ";
-                    std::cin >> password;
-                    change_password(name, password);
-                    return 0;
-                } else if (choice == 2){
-                    delete_user(name);
-                    return 0;
-                } else {
-                    std::cout << "Bye!" << std::endl;
-                    return 0;
-                }
+        bool correct = login(name, pw);
+        if (correct) {
+            std::cout << "Login successful." << std::endl;
+            std::cout << "Welcome, " << name << std::endl;
+            std::cout << "What service you want, " << name << " ?" << std::endl;
+            std::cout << "1. Change password" << std::endl;
+            std::cout << "2. Delete account" << std::endl;
+            std::cout << "3. Exit" << std::endl;
+            int choice;
+            std::cout << "Enter your choice: ";
+            std::cin >> choice;
+            if (choice == 1) {
+                std::string password;
+                std::cout << "Enter your new password: ";
+                std::cin >> password;
+                change_password(name, password);
+            } else if (choice == 2){
+                delete_user(name);
+            } else { 
+                std::cout << "Bye!" << std::endl;
             }
+        } else {
+            std::cout << "Wrong password." << std::endl;
         }
-        std::cout << "Wrong password." << std::endl;
-        return 0;
         
     } else {
         std::cout << "You are not registered." << std::endl;
@@ -54,4 +48,5 @@ int main()
             std::cout << "Bye!" << std::endl;
         }
     }
+    return 0;
 }
