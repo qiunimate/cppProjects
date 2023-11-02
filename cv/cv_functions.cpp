@@ -26,6 +26,15 @@ cv::Mat canny_converter(cv::Mat img){
     return canny_img;
 }
 
+cv::Mat gray_equalizer(cv::Mat img){
+    cv::Mat gray_img;
+    cv::cvtColor(img, gray_img, cv::COLOR_BGR2GRAY);
+    cv::Mat equalized_img;
+    cv::equalizeHist(gray_img, equalized_img);
+    cv::cvtColor(equalized_img, equalized_img, cv::COLOR_GRAY2BGR);
+    return equalized_img;
+}
+
 cv::Mat img_operator(cv::Mat img, int operator_type, void* other_data/*=NULL*/){
     switch (operator_type)
     {
@@ -35,6 +44,8 @@ cv::Mat img_operator(cv::Mat img, int operator_type, void* other_data/*=NULL*/){
         return binary_converter(img);
     case CANNY:
         return canny_converter(img);
+    case GRAYEQUAL:
+        return gray_equalizer(img);
     default:
         cerr << "Error: Invalid operator type" << endl;
         return img;

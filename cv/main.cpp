@@ -13,6 +13,7 @@ struct Userdata {
     Mat3b canvas;
     string winName;
     string directory_name;
+    int y; // number of rows of buttons
 };
 
 int button_width = 100;
@@ -28,6 +29,7 @@ void callBackFunc(int event, int x, int y, int flags, void* userdata)
     Mat3b canvas = ((Userdata*)userdata)->canvas;
     string winName = ((Userdata*)userdata)->winName;
     string directory_name = ((Userdata*)userdata)->directory_name;
+    int num_rows = ((Userdata*)userdata)->y;
     
     ButtonFunction buttonFunction;
 
@@ -48,7 +50,7 @@ void callBackFunc(int event, int x, int y, int flags, void* userdata)
             } else {
                 last_oper = buttonFunction;
                 processed_img = img_operator(img, buttonFunction);
-                processed_img.copyTo(canvas(Rect(processed_img.cols, button_height, processed_img.cols, processed_img.rows)));
+                processed_img.copyTo(canvas(Rect(processed_img.cols, (num_rows+1)*button_height, processed_img.cols, processed_img.rows)));
                 // rectangle(canvas(button.getRect()), button.getRect(), Scalar(0,0,255), 1);
             }
         }
@@ -77,10 +79,28 @@ void main_func()
     Button binary_button = Button(button_width, button_height, BINARY);
     Button canny_button = Button(button_width, button_height, CANNY);
     Button save_button = Button(button_width, button_height, SAVE);
+    Button grayequal_button = Button(button_width, button_height, GRAYEQUAL);
+    grayequal_button.setFontScale(0.4);
     buttons.push_back(grayscale_button);
     buttons.push_back(binary_button);
     buttons.push_back(canny_button);
+    buttons.push_back(grayequal_button);
     buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+    buttons.push_back(save_button);
+
 
     // Set the button positions
     int x = 0;
@@ -92,7 +112,7 @@ void main_func()
         buttons[counter].setY(y*button_height);
         counter++;
         x += 1;
-        if (x + button_width > 2*img.cols)
+        if ((x+1) * button_width > 2 * img.cols)
         {
             x = 0;
             y += 1;
@@ -115,7 +135,7 @@ void main_func()
     string winName = image_name;
     namedWindow(winName);
 
-    Userdata data = {img, buttons, canvas, winName, directory_name};
+    Userdata data = {img, buttons, canvas, winName, directory_name, y};
     setMouseCallback(winName, callBackFunc, &data);
 
     imshow(winName, canvas);
