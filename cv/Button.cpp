@@ -5,9 +5,10 @@ Button::Button() {
     text = "";
 }
 
-Button::Button(int x, int y, int width, int height, string text) {
-    button = Rect(x, y, width, height);
-    this->text = text;
+Button::Button(int width, int height, ButtonFunction function) {
+    button = Rect(0, 0, width, height);
+    this->buttonFunction = function;
+    this->text = button_functions[function];
 }
 
 Button::Button(Rect button, string text) {
@@ -35,7 +36,7 @@ void Button::setText(string text) {
     this->text = text;
 }
 
-Rect Button::getButton() {
+Rect Button::getRect() {
     return button;
 }
 
@@ -59,8 +60,49 @@ std::string Button::getText() {
     return text;
 }
 
-void Button::draw(Mat3b canvas, int fontFace, double fontScale, int thickness) {
-    rectangle(canvas(button), button, Scalar(200,200,200), 2);
+void Button::setFontFace(int fontFace) {
+    this->fontFace = fontFace;
+}
+
+void Button::setFontScale(double fontScale) {
+    this->fontScale = fontScale;
+}
+
+void Button::setThickness(int thickness) {
+    this->thickness = thickness;
+}
+
+int Button::getFontFace() {
+    return fontFace;
+}
+
+double Button::getFontScale() {
+    return fontScale;
+}
+
+int Button::getThickness() {
+    return thickness;
+}
+
+void Button::setButtonFunction(ButtonFunction buttonFunction) {
+    this->buttonFunction = buttonFunction;
+}
+
+ButtonFunction Button::getButtonFunction() {
+    return buttonFunction;
+}
+
+
+Point Button::getTextPosition() {
+    int baseline = 0;
+    Size textSize = getTextSize(text, fontFace, fontScale, thickness, &baseline);
+    Point textOrg((button.width - textSize.width)/2, (button.height + textSize.height)/2);
+    return textOrg;
+}
+
+void Button::draw(Mat3b canvas) {
+    cv::Rect buttonRect(button); // Create a Rect object from button's coordinates
+    rectangle(canvas, buttonRect, Scalar(0, 0, 0), 1);
     int baseline = 0;
     Size textSize = getTextSize(text, fontFace, fontScale, thickness, &baseline);
     Point textOrg((button.width - textSize.width)/2, (button.height + textSize.height)/2);
