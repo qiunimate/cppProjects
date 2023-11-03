@@ -1,6 +1,5 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include <windows.h>
 #include "general_helpers.hpp"
 #include "cv_functions.hpp"
 #include "Button.hpp"
@@ -39,6 +38,8 @@ void callBackFunc(int event, int x, int y, int flags, void* userdata)
         for (auto button : buttons){
             if (button.getRect().contains(Point(x, y))){
                 buttonFunction = button.getButtonFunction();
+                cv::Rect buttonRect(button.getRect());
+                rectangle(canvas, buttonRect, Scalar(0, 0, 255), 1);
                 break;
             }
         }
@@ -51,7 +52,16 @@ void callBackFunc(int event, int x, int y, int flags, void* userdata)
                 last_oper = buttonFunction;
                 processed_img = img_operator(img, buttonFunction);
                 processed_img.copyTo(canvas(Rect(processed_img.cols, (num_rows+1)*button_height, processed_img.cols, processed_img.rows)));
-                // rectangle(canvas(button.getRect()), button.getRect(), Scalar(0,0,255), 1);
+            }
+        }
+    }
+    if (event == EVENT_LBUTTONUP) {
+        for (auto button : buttons){
+            if (button.getRect().contains(Point(x, y))){
+                buttonFunction = button.getButtonFunction();
+                cv::Rect buttonRect(button.getRect());
+                rectangle(canvas, buttonRect, Scalar(0, 0, 0), 1);
+                break;
             }
         }
     }
@@ -82,25 +92,10 @@ void main_func()
     Button grayequal_button = Button(button_width, button_height, GRAYEQUAL);
     grayequal_button.setFontScale(0.4);
     buttons.push_back(grayscale_button);
+    buttons.push_back(grayequal_button);
     buttons.push_back(binary_button);
     buttons.push_back(canny_button);
-    buttons.push_back(grayequal_button);
     buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-    buttons.push_back(save_button);
-
 
     // Set the button positions
     int x = 0;
@@ -133,7 +128,7 @@ void main_func()
 
     // Setup callback function
     string winName = image_name;
-    namedWindow(winName);
+    namedWindow(winName, 0);
 
     Userdata data = {img, buttons, canvas, winName, directory_name, y};
     setMouseCallback(winName, callBackFunc, &data);
