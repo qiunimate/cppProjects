@@ -4,13 +4,14 @@
 using namespace std;
 using namespace cv;
 
-const string button_functions[] = {"Grayscale", "Binary", "Canny","GrayEqualize" , "Save", "Original"};
+const string button_functions[] = {"Grayscale", "Binary", "Canny","GrayEqualize", "SaltPepper", "Save", "Original"};
 
 enum ButtonFunction {
     GRAYSCALE,
     BINARY,
     CANNY,
     GRAYEQUAL,
+    SALTPEPPER,
     SAVE,
     ORIGINAL,
 };

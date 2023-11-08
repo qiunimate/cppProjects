@@ -90,11 +90,13 @@ void main_func()
     Button canny_button = Button(button_width, button_height, CANNY);
     Button save_button = Button(button_width, button_height, SAVE);
     Button grayequal_button = Button(button_width, button_height, GRAYEQUAL);
+    Button graypepper_button = Button(button_width, button_height, SALTPEPPER);
     grayequal_button.setFontScale(0.4);
     buttons.push_back(grayscale_button);
     buttons.push_back(grayequal_button);
     buttons.push_back(binary_button);
     buttons.push_back(canny_button);
+    buttons.push_back(graypepper_button);
     buttons.push_back(save_button);
 
     // Set the button positions
@@ -137,15 +139,15 @@ void main_func()
     waitKey();
 }
 
-void test() {
-    string img_name = "data/test.jpg";
-    Mat img = imread(img_name);
-    Mat processed_img = img_operator(img, GRAYSCALE);
+// void test() {
+//     string img_name = "data/test.jpg";
+//     Mat img = imread(img_name);
+//     img_operator(img, processed_img, GRAYSCALE);
 
-    imshow("ori", img);
-    waitKey(0);
-    printf("The size of the processed image is %d x %d \n", processed_img.cols, processed_img.rows);
-}
+//     imshow("ori", img);
+//     waitKey(0);
+//     printf("The size of the processed image is %d x %d \n", processed_img.cols, processed_img.rows);
+// }
 
 int main() {
     main_func();

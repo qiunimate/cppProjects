@@ -35,6 +35,30 @@ cv::Mat gray_equalizer(cv::Mat img){
     return equalized_img;
 }
 
+Mat salt_pepper_noise(const Mat &srcImage, int n/*= 1000*/)
+{
+	Mat dstImage = srcImage.clone();
+	for (int k = 0; k < n; k++)
+	{
+		int i = rand() % dstImage.rows;
+		int j = rand() % dstImage.cols;
+
+        dstImage.at<Vec3b>(i, j)[0] = 255;
+        dstImage.at<Vec3b>(i, j)[1] = 255;
+        dstImage.at<Vec3b>(i, j)[2] = 255;
+		
+		i = rand() % dstImage.rows;
+		j = rand() % dstImage.cols;
+		
+        dstImage.at<Vec3b>(i, j)[0] = 0;
+        dstImage.at<Vec3b>(i, j)[1] = 0;
+        dstImage.at<Vec3b>(i, j)[2] = 0;
+	}
+
+    return dstImage;
+}
+
+
 cv::Mat img_operator(cv::Mat img, int operator_type, void* other_data/*=NULL*/){
     switch (operator_type)
     {
@@ -46,6 +70,8 @@ cv::Mat img_operator(cv::Mat img, int operator_type, void* other_data/*=NULL*/){
         return canny_converter(img);
     case GRAYEQUAL:
         return gray_equalizer(img);
+    case SALTPEPPER:
+        return salt_pepper_noise(img);
     default:
         cerr << "Error: Invalid operator type" << endl;
         return img;
