@@ -4,14 +4,18 @@
 using namespace std;
 using namespace cv;
 
-const string button_functions[] = {"Grayscale", "Binary", "Canny","GrayEqualize", "SaltPepper", "Save", "Original"};
+const string button_functions[] = {"Grayscale", "Binary", "CannyDetect", "SobelDetect", "LaplacianDetect", "GrayEqualize", "SaltPepper", "GaussianNoise", "PoissonNoise", "Save", "Original"};
 
 enum ButtonFunction {
     GRAYSCALE,
     BINARY,
     CANNY,
+    SOBEL,
+    LAPLACIAN,
     GRAYEQUAL,
     SALTPEPPER,
+    GAUSSIAN_NOISE,
+    POISSON_NOISE,
     SAVE,
     ORIGINAL,
 };
@@ -49,6 +53,6 @@ class Button {
         string text;
         ButtonFunction buttonFunction;
         int fontFace = FONT_HERSHEY_COMPLEX;
-        double fontScale = 0.5;
+        double fontScale = 0.4;
         int thickness = 1;
 };

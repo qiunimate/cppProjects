@@ -20,10 +20,29 @@ void canny_converter(const cv::Mat &img, cv::Mat &dst_img){
     cv::cvtColor(dst_img, dst_img, cv::COLOR_GRAY2BGR);
 }
 
+void sobel_detector(const cv::Mat &img, cv::Mat &dst_img){
+    cv::cvtColor(img, dst_img, cv::COLOR_BGR2GRAY);
+    cv::Sobel(dst_img, dst_img, CV_8U, 1, 1, 3, 1, 0, cv::BORDER_DEFAULT);
+    cv::cvtColor(dst_img, dst_img, cv::COLOR_GRAY2BGR);
+}
+
+void laplacian_detector(const cv::Mat &img, cv::Mat &dst_img){
+    cv::cvtColor(img, dst_img, cv::COLOR_BGR2GRAY);
+    cv::Laplacian(dst_img, dst_img, CV_8U, 3, 1, 0, cv::BORDER_DEFAULT);
+    cv::cvtColor(dst_img, dst_img, cv::COLOR_GRAY2BGR);
+}
+
 void gray_equalizer(const cv::Mat &img, cv::Mat &dst_img){
     cv::cvtColor(img, dst_img, cv::COLOR_BGR2GRAY);
     cv::equalizeHist(dst_img, dst_img);
     cv::cvtColor(dst_img, dst_img, cv::COLOR_GRAY2BGR);
+}
+
+void Gaussian_Noise(const cv::Mat &img, cv::Mat &dst_img){
+    dst_img = img.clone();
+    cv::Mat noise = cv::Mat(img.size(), CV_32SC3);
+    cv::randn(noise, 0, 10);
+    dst_img += noise;
 }
 
 void salt_pepper_noise(const cv::Mat &img, cv::Mat &dst_img, int n/*= 1000*/)
@@ -63,6 +82,15 @@ void img_operator(const cv::Mat &img, cv::Mat &dst_img, int operator_type, void*
         break;
     case GRAYEQUAL:
         gray_equalizer(img, dst_img);
+        break;
+    case SOBEL:
+        sobel_detector(img, dst_img);
+        break;
+    case LAPLACIAN:
+        laplacian_detector(img, dst_img);
+        break;
+    case GAUSSIAN_NOISE:
+        Gaussian_Noise(img, dst_img);
         break;
     case SALTPEPPER:
         salt_pepper_noise(img, dst_img);

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <opencv2/opencv.hpp>
 #include "general_helpers.hpp"
 #include "cv_functions.hpp"
 #include "Button.hpp"
@@ -18,7 +17,7 @@ struct Userdata {
 int button_width = 100;
 int button_height = 30;
 Mat processed_img;
-ButtonFunction last_oper = ORIGINAL;
+ButtonFunction last_oper = ORIGINAL; // the last operation that is performed on the image
 
 
 void callBackFunc(int event, int x, int y, int flags, void* userdata)
@@ -30,7 +29,7 @@ void callBackFunc(int event, int x, int y, int flags, void* userdata)
     string directory_name = ((Userdata*)userdata)->directory_name;
     int num_rows = ((Userdata*)userdata)->y;
     
-    ButtonFunction buttonFunction;
+    ButtonFunction buttonFunction; // the function of the button that is clicked
 
     if (event == EVENT_LBUTTONDOWN)
     {
@@ -88,6 +87,10 @@ void main_func()
     Button grayscale_button = Button(button_width, button_height, GRAYSCALE);
     Button binary_button = Button(button_width, button_height, BINARY);
     Button canny_button = Button(button_width, button_height, CANNY);
+    Button sobel_button = Button(button_width, button_height, SOBEL);
+    Button laplacian_button = Button(button_width, button_height, LAPLACIAN);
+    Button gaussian_button = Button(button_width, button_height, GAUSSIAN_NOISE);
+    Button poisson_button = Button(button_width, button_height, POISSON_NOISE);
     Button save_button = Button(button_width, button_height, SAVE);
     Button grayequal_button = Button(button_width, button_height, GRAYEQUAL);
     Button graypepper_button = Button(button_width, button_height, SALTPEPPER);
@@ -96,7 +99,10 @@ void main_func()
     buttons.push_back(grayequal_button);
     buttons.push_back(binary_button);
     buttons.push_back(canny_button);
-    buttons.push_back(graypepper_button);
+    buttons.push_back(sobel_button);
+    buttons.push_back(laplacian_button);
+    buttons.push_back(gaussian_button);
+    buttons.push_back(poisson_button);
     buttons.push_back(save_button);
 
     // Set the button positions
