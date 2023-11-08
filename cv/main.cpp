@@ -50,7 +50,7 @@ void callBackFunc(int event, int x, int y, int flags, void* userdata)
                 imwrite(path, processed_img);
             } else {
                 last_oper = buttonFunction;
-                processed_img = img_operator(img, buttonFunction);
+                img_operator(img, processed_img, last_oper);
                 processed_img.copyTo(canvas(Rect(processed_img.cols, (num_rows+1)*button_height, processed_img.cols, processed_img.rows)));
             }
         }

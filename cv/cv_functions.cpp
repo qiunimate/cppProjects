@@ -1,79 +1,77 @@
 #include "cv_functions.hpp"
 #include "Button.hpp"
 
-cv::Mat gray_converter(cv::Mat img){
-    cv::Mat gray_img;
-    cv::cvtColor(img, gray_img, cv::COLOR_BGR2GRAY);
-    cv::cvtColor(gray_img, gray_img, cv::COLOR_GRAY2BGR);
-    return gray_img;
+void gray_converter(const cv::Mat &img, cv::Mat &dst_img){
+    cv::cvtColor(img, dst_img, cv::COLOR_BGR2GRAY);
+    cv::cvtColor(dst_img, dst_img, cv::COLOR_GRAY2BGR);
 }
 
-cv::Mat binary_converter(cv::Mat img){
-    cv::Mat gray_img = gray_converter(img);
-    cv::Mat binary_img;
-    cv::cvtColor(gray_img, binary_img, cv::COLOR_BGR2GRAY);
-    cv::threshold(binary_img, binary_img, 127, 255, cv::THRESH_BINARY);
-    cv::cvtColor(binary_img, binary_img, cv::COLOR_GRAY2BGR);
-    return binary_img;
+void binary_converter(const cv::Mat &img, cv::Mat &dst_img){
+    gray_converter(img, dst_img);
+    cv::cvtColor(dst_img, dst_img, cv::COLOR_BGR2GRAY);
+    cv::threshold(dst_img, dst_img, 127, 255, cv::THRESH_BINARY);
+    cv::cvtColor(dst_img, dst_img, cv::COLOR_GRAY2BGR);
 }
 
-cv::Mat canny_converter(cv::Mat img){
-    cv::Mat gray_img = gray_converter(img);
-    cv::Mat canny_img;
-    cv::cvtColor(gray_img, canny_img, cv::COLOR_BGR2GRAY);
-    cv::Canny(canny_img, canny_img, 50, 200);
-    cv::cvtColor(canny_img, canny_img, cv::COLOR_GRAY2BGR);
-    return canny_img;
+void canny_converter(const cv::Mat &img, cv::Mat &dst_img){
+    gray_converter(img, dst_img);
+    cv::cvtColor(dst_img, dst_img, cv::COLOR_BGR2GRAY);
+    cv::Canny(dst_img, dst_img, 50, 200);
+    cv::cvtColor(dst_img, dst_img, cv::COLOR_GRAY2BGR);
 }
 
-cv::Mat gray_equalizer(cv::Mat img){
-    cv::Mat gray_img;
-    cv::cvtColor(img, gray_img, cv::COLOR_BGR2GRAY);
-    cv::Mat equalized_img;
-    cv::equalizeHist(gray_img, equalized_img);
-    cv::cvtColor(equalized_img, equalized_img, cv::COLOR_GRAY2BGR);
-    return equalized_img;
+void gray_equalizer(const cv::Mat &img, cv::Mat &dst_img){
+    cv::cvtColor(img, dst_img, cv::COLOR_BGR2GRAY);
+    cv::equalizeHist(dst_img, dst_img);
+    cv::cvtColor(dst_img, dst_img, cv::COLOR_GRAY2BGR);
 }
 
-Mat salt_pepper_noise(const Mat &srcImage, int n/*= 1000*/)
+void salt_pepper_noise(const cv::Mat &img, cv::Mat &dst_img, int n/*= 1000*/)
 {
-	Mat dstImage = srcImage.clone();
+	dst_img = img.clone();
 	for (int k = 0; k < n; k++)
 	{
-		int i = rand() % dstImage.rows;
-		int j = rand() % dstImage.cols;
+		int i = rand() % dst_img.rows;
+		int j = rand() % dst_img.cols;
 
-        dstImage.at<Vec3b>(i, j)[0] = 255;
-        dstImage.at<Vec3b>(i, j)[1] = 255;
-        dstImage.at<Vec3b>(i, j)[2] = 255;
+        dst_img.at<Vec3b>(i, j)[0] = 255;
+        dst_img.at<Vec3b>(i, j)[1] = 255;
+        dst_img.at<Vec3b>(i, j)[2] = 255;
 		
-		i = rand() % dstImage.rows;
-		j = rand() % dstImage.cols;
+		i = rand() % dst_img.rows;
+		j = rand() % dst_img.cols;
 		
-        dstImage.at<Vec3b>(i, j)[0] = 0;
-        dstImage.at<Vec3b>(i, j)[1] = 0;
-        dstImage.at<Vec3b>(i, j)[2] = 0;
+        dst_img.at<Vec3b>(i, j)[0] = 0;
+        dst_img.at<Vec3b>(i, j)[1] = 0;
+        dst_img.at<Vec3b>(i, j)[2] = 0;
 	}
-
-    return dstImage;
 }
 
 
-cv::Mat img_operator(cv::Mat img, int operator_type, void* other_data/*=NULL*/){
+void img_operator(const cv::Mat &img, cv::Mat &dst_img, int operator_type, void* other_data/*=NULL*/){
+    dst_img = img.clone();
     switch (operator_type)
     {
     case GRAYSCALE:
-        return gray_converter(img);
+        gray_converter(img, dst_img);
+        break;
     case BINARY:
-        return binary_converter(img);
+        binary_converter(img, dst_img);
+        break;
     case CANNY:
-        return canny_converter(img);
+        canny_converter(img, dst_img);
+        break;
     case GRAYEQUAL:
-        return gray_equalizer(img);
+        gray_equalizer(img, dst_img);
+        break;
     case SALTPEPPER:
-        return salt_pepper_noise(img);
+        salt_pepper_noise(img, dst_img);
+        break;
+    case ORIGINAL:
+        cout << "Operating the original image" << endl;
+        break;
     default:
-        cerr << "Error: Invalid operator type" << endl;
-        return img;
+        cout << "No such operator" << endl;
+        break;
     }
 }
