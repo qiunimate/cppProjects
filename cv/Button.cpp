@@ -100,7 +100,7 @@ Point Button::getTextPosition() {
     return textOrg;
 }
 
-void Button::draw(Mat3b canvas) {
+void Button::draw(Mat3b canvas) { // draw the button on the canvas
     cv::Rect buttonRect(button); // Create a Rect object from button's coordinates
     rectangle(canvas, buttonRect, Scalar(0, 0, 0), 1);
     int baseline = 0;

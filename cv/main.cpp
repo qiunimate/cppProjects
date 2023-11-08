@@ -5,26 +5,28 @@
 using namespace std;
 using namespace cv;
 
+// to pass data to the callback function
 struct Userdata {
-    Mat img;
+    cv::Mat img;
     vector<Button> buttons;
-    Mat3b canvas;
+    cv::Mat3b canvas;
     string winName;
     string directory_name;
     int y; // number of rows of buttons
 };
 
-int button_width = 100;
-int button_height = 30;
-Mat processed_img;
+// global variables
+int button_width = 200;
+int button_height = 50;
+cv::Mat processed_img;
 ButtonFunction last_oper = ORIGINAL; // the last operation that is performed on the image
 
-
+// On mouse event
 void callBackFunc(int event, int x, int y, int flags, void* userdata)
 {
-    Mat img = ((Userdata*)userdata)->img;
+    cv::Mat img = ((Userdata*)userdata)->img;
     vector<Button> buttons = ((Userdata*)userdata)->buttons;
-    Mat3b canvas = ((Userdata*)userdata)->canvas;
+    cv::Mat3b canvas = ((Userdata*)userdata)->canvas;
     string winName = ((Userdata*)userdata)->winName;
     string directory_name = ((Userdata*)userdata)->directory_name;
     int num_rows = ((Userdata*)userdata)->y;
@@ -35,19 +37,19 @@ void callBackFunc(int event, int x, int y, int flags, void* userdata)
     {
         buttonFunction = ORIGINAL;
         for (auto button : buttons){
-            if (button.getRect().contains(Point(x, y))){
+            if (button.getRect().contains(Point(x, y))){ // if the mouse is clicked on a button
                 buttonFunction = button.getButtonFunction();
-                cv::Rect buttonRect(button.getRect());
-                rectangle(canvas, buttonRect, Scalar(0, 0, 255), 1);
+                Rect buttonRect(button.getRect());
+                rectangle(canvas, buttonRect, Scalar(0, 0, 255), 1); // draw a red rectangle around the button
                 break;
             }
         }
         if (buttonFunction != ORIGINAL){
-            if (buttonFunction == SAVE){
+            if (buttonFunction == SAVE){ // if the save button is clicked
                 string path = directory_name + winName + "_" + button_functions[last_oper] + ".jpg";
                 printf("Saving image to %s\n", path.c_str());
                 imwrite(path, processed_img);
-            } else {
+            } else { // if any operation button is clicked
                 last_oper = buttonFunction;
                 img_operator(img, processed_img, last_oper);
                 processed_img.copyTo(canvas(Rect(processed_img.cols, (num_rows+1)*button_height, processed_img.cols, processed_img.rows)));
@@ -58,13 +60,12 @@ void callBackFunc(int event, int x, int y, int flags, void* userdata)
         for (auto button : buttons){
             if (button.getRect().contains(Point(x, y))){
                 buttonFunction = button.getButtonFunction();
-                cv::Rect buttonRect(button.getRect());
-                rectangle(canvas, buttonRect, Scalar(0, 0, 0), 1);
+                Rect buttonRect(button.getRect());
+                rectangle(canvas, buttonRect, Scalar(0, 0, 0), 1); // draw a black rectangle around the button (to remove the red one)
                 break;
             }
         }
     }
-
 
     imshow(winName, canvas);
     waitKey(1);
@@ -72,13 +73,11 @@ void callBackFunc(int event, int x, int y, int flags, void* userdata)
 
 void main_func() 
 {
-    // An image
     string img_path = "data/test.jpg";
     string directory_name = extractDirectoryName(img_path);
     string file_name = extractFileName(img_path);
     string image_name = extractImageName(file_name);
-
-    Mat img = imread(img_path);
+    cv::Mat img = imread(img_path);
     Size img_resize = Size(800, 600);
     resize(img, img, img_resize, INTER_LINEAR);
 
@@ -89,12 +88,10 @@ void main_func()
     Button canny_button = Button(button_width, button_height, CANNY);
     Button sobel_button = Button(button_width, button_height, SOBEL);
     Button laplacian_button = Button(button_width, button_height, LAPLACIAN);
-    Button gaussian_button = Button(button_width, button_height, GAUSSIAN_NOISE);
-    Button poisson_button = Button(button_width, button_height, POISSON_NOISE);
+    Button gaussian_button = Button(button_width, button_height, GAUSSIANNOISE);
+    Button salt_pepper_button = Button(button_width, button_height, SALTPEPPERNOISE);
     Button save_button = Button(button_width, button_height, SAVE);
     Button grayequal_button = Button(button_width, button_height, GRAYEQUAL);
-    Button graypepper_button = Button(button_width, button_height, SALTPEPPER);
-    grayequal_button.setFontScale(0.4);
     buttons.push_back(grayscale_button);
     buttons.push_back(grayequal_button);
     buttons.push_back(binary_button);
@@ -102,7 +99,7 @@ void main_func()
     buttons.push_back(sobel_button);
     buttons.push_back(laplacian_button);
     buttons.push_back(gaussian_button);
-    buttons.push_back(poisson_button);
+    buttons.push_back(salt_pepper_button);
     buttons.push_back(save_button);
 
     // Set the button positions
@@ -123,7 +120,7 @@ void main_func()
     }
 
     // The canvas
-    Mat3b canvas = Mat3b(img.rows+(y+1)*button_height, 2*img.cols, Vec3b(255,255,255));
+    cv::Mat3b canvas = cv::Mat3b(img.rows+(y+1)*button_height, 2*img.cols, Vec3b(255,255,255));
 
     // Draw the buttons
     for (int i = 0; i < buttons.size(); i++)
@@ -131,7 +128,7 @@ void main_func()
         buttons[i].draw(canvas);
     }
 
-    // Draw the image
+    // Draw the operated image
     img.copyTo(canvas(Rect(0, (y+1)*button_height, img.cols, img.rows)));
 
     // Setup callback function
@@ -144,16 +141,6 @@ void main_func()
     imshow(winName, canvas);
     waitKey();
 }
-
-// void test() {
-//     string img_name = "data/test.jpg";
-//     Mat img = imread(img_name);
-//     img_operator(img, processed_img, GRAYSCALE);
-
-//     imshow("ori", img);
-//     waitKey(0);
-//     printf("The size of the processed image is %d x %d \n", processed_img.cols, processed_img.rows);
-// }
 
 int main() {
     main_func();
